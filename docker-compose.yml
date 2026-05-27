@@ -1,0 +1,34 @@
+services:
+
+  # ── Oracle XE Slim ──────────────────────────────────────────
+  # Imagem leve, otimizada para desenvolvimento e testes.
+  # Não requer login no registry da Oracle.
+  # APP_USER e APP_USER_PASSWORD criam o usuário automaticamente.
+  oracle:
+    image: gvenzl/oracle-xe:slim
+    container_name: pickbyvoice-oracle
+    env_file:
+      - .env
+    environment:
+      - ORACLE_PASSWORD=${ORACLE_PASSWORD}
+      - APP_USER=${ORACLE_USER}
+      - APP_USER_PASSWORD=${ORACLE_APP_PASSWORD}
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+    networks:
+      - pbv_net
+
+volumes:
+  oracle_data:
+
+networks:
+  pbv_net:
+    driver: bridge
