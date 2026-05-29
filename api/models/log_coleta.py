@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from datetime import datetime
 from sqlalchemy import String, ForeignKey, DateTime, text
 from sqlalchemy.dialects.oracle import NUMBER
@@ -7,7 +8,7 @@ from models.base import Base
 class LogColeta(Base):
     __tablename__ = "log_coleta"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(NUMBER, sa.Identity(start=1), primary_key=True)
     item_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("itens_ordem.id"), nullable=False)
     operador_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("operadores.id"), nullable=False)
     codigo_informado: Mapped[str] = mapped_column(String(10), nullable=False)

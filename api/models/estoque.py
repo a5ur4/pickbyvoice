@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from datetime import datetime
 from sqlalchemy import ForeignKey, DateTime, text
 from sqlalchemy.dialects.oracle import NUMBER
@@ -7,7 +8,7 @@ from models.base import Base
 class Estoque(Base):
     __tablename__ = "estoque"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(NUMBER, sa.Identity(start=1), primary_key=True)
     produto_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("produtos.id"), nullable=False)
     endereco_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("enderecos.id"), nullable=False)
     quantidade: Mapped[int] = mapped_column(NUMBER, server_default=text("0"), nullable=False)

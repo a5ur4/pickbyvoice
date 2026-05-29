@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from sqlalchemy import String, ForeignKey, text
 from sqlalchemy.dialects.oracle import NUMBER
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -6,7 +7,7 @@ from models.base import Base
 class ItemOrdem(Base):
     __tablename__ = "itens_ordem"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(NUMBER, sa.Identity(start=1), primary_key=True)
     ordem_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("ordens.id"), nullable=False)
     produto_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("produtos.id"), nullable=False)
     endereco_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("enderecos.id"), nullable=False)

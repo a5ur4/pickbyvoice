@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from datetime import datetime
 from sqlalchemy import String, DateTime, text
 from sqlalchemy.dialects.oracle import NUMBER
@@ -7,7 +8,7 @@ from models.base import Base
 class Operador(Base):
     __tablename__ = "operadores"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(NUMBER, sa.Identity(start=1), primary_key=True)
     nome: Mapped[str] = mapped_column(String(100), nullable=False)
     matricula: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     status: Mapped[str] = mapped_column(String(10), server_default=text("'ATIVO'"), nullable=False)

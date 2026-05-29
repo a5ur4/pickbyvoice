@@ -7,30 +7,30 @@ from schemas.coleta import ConfirmarRequest, ConfirmarResponse
 async def confirmar(req: ConfirmarRequest) -> ConfirmarResponse:
     async with get_session() as session:
         conn = await session.connection()
-        raw_conn = conn.get_wrapped_connection()
+        adapt = await conn.get_raw_connection()
+        raw_conn = adapt.dbapi_connection.driver_connection
 
-        resultado_var        = raw_conn.variable(oracledb.STRING)
-        mensagem_var         = raw_conn.variable(oracledb.STRING)
-        comando_arduino_var  = raw_conn.variable(oracledb.STRING)
-        tentativa_var        = raw_conn.variable(oracledb.NUMBER)
+        async with raw_conn.cursor() as cursor:
+            cursor.setinputsizes(
+                None, None, None, None, 
+                oracledb.STRING, oracledb.STRING, oracledb.STRING, oracledb.NUMBER
+            )
+            
+            res_list = await cursor.callproc("sp_confirmar_coleta", [
+                req.item_id,
+                req.operador_id,
+                req.codigo_informado.strip().upper(),
+                req.qtd_coletada,
+                " " * 100,  # resultado
+                " " * 500,  # mensagem
+                " " * 100,  # comando_arduino
+                0           # tentativa
+            ])
 
-        cursor = raw_conn.cursor()
-        await cursor.callproc("sp_confirmar_coleta", [
-            req.item_id,
-            req.operador_id,
-            req.codigo_informado.strip().upper(),
-            req.qtd_coletada,
-            resultado_var,
-            mensagem_var,
-            comando_arduino_var,
-            tentativa_var,
-        ])
-
-        res = resultado_var.getvalue()
-        msg = mensagem_var.getvalue()
-        cmd = comando_arduino_var.getvalue()
-        ten = tentativa_var.getvalue()
-        await cursor.close()
+            res = res_list[4]
+            msg = res_list[5]
+            cmd = res_list[6]
+            ten = res_list[7]
 
     if res == 'ERRO_SISTEMA':
         raise ItemNaoEncontrado()

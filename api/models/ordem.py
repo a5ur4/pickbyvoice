@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from datetime import datetime
 from sqlalchemy import String, ForeignKey, DateTime, text
 from sqlalchemy.dialects.oracle import NUMBER
@@ -7,7 +8,7 @@ from models.base import Base
 class Ordem(Base):
     __tablename__ = "ordens"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(NUMBER, sa.Identity(start=1), primary_key=True)
     numero: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
     operador_id: Mapped[int | None] = mapped_column(NUMBER, ForeignKey("operadores.id"))
     status: Mapped[str] = mapped_column(String(20), server_default=text("'AGUARDANDO'"), nullable=False)

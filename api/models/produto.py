@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from sqlalchemy import String, text
 from sqlalchemy.dialects.oracle import NUMBER
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -6,7 +7,7 @@ from models.base import Base
 class Produto(Base):
     __tablename__ = "produtos"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(NUMBER, sa.Identity(start=1), primary_key=True)
     codigo: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
     descricao: Mapped[str] = mapped_column(String(200), nullable=False)
     unidade: Mapped[str] = mapped_column(String(10), server_default=text("'UN'"), nullable=False)

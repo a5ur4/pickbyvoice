@@ -31,20 +31,15 @@ async def listar_abertas() -> list[OrdemResponse]:
 
 async def iniciar(req: IniciarOrdemRequest) -> OrdemActionResponse:
     async with get_session() as session:
-        # Para stored procedures com OUT params no oracledb async,
-        # acessamos a conexão raw do oracledb
         conn = await session.connection()
-        raw_conn = conn.get_wrapped_connection()
+        adapt = await conn.get_raw_connection()
+        raw_conn = adapt.dbapi_connection.driver_connection
         
-        resultado_var = raw_conn.variable(oracledb.STRING)
-        mensagem_var  = raw_conn.variable(oracledb.STRING)
-
-        cursor = raw_conn.cursor()
-        await cursor.callproc("sp_iniciar_ordem", [req.operador_id, req.ordem_id, resultado_var, mensagem_var])
-        
-        resultado = resultado_var.getvalue()
-        mensagem  = mensagem_var.getvalue()
-        await cursor.close()
+        async with raw_conn.cursor() as cursor:
+            cursor.setinputsizes(None, None, oracledb.STRING, oracledb.STRING)
+            res = await cursor.callproc("sp_iniciar_ordem", [req.operador_id, req.ordem_id, " " * 100, " " * 500])
+            resultado = res[2]
+            mensagem  = res[3]
 
     if resultado == 'ERRO':
         raise OrdemJaAtiva()
@@ -55,17 +50,14 @@ async def iniciar(req: IniciarOrdemRequest) -> OrdemActionResponse:
 async def pausar(ordem_id: int) -> OrdemActionResponse:
     async with get_session() as session:
         conn = await session.connection()
-        raw_conn = conn.get_wrapped_connection()
+        adapt = await conn.get_raw_connection()
+        raw_conn = adapt.dbapi_connection.driver_connection
         
-        resultado_var = raw_conn.variable(oracledb.STRING)
-        mensagem_var  = raw_conn.variable(oracledb.STRING)
-
-        cursor = raw_conn.cursor()
-        await cursor.callproc("sp_pausar_ordem", [ordem_id, resultado_var, mensagem_var])
-        
-        resultado = resultado_var.getvalue()
-        mensagem  = mensagem_var.getvalue()
-        await cursor.close()
+        async with raw_conn.cursor() as cursor:
+            cursor.setinputsizes(None, oracledb.STRING, oracledb.STRING)
+            res = await cursor.callproc("sp_pausar_ordem", [ordem_id, " " * 100, " " * 500])
+            resultado = res[1]
+            mensagem  = res[2]
 
     if resultado == 'ERRO':
         raise OrdemNaoEncontrada()
