@@ -30,6 +30,7 @@ pickbyvoice/
 │   └── services/       # Lógica de negócio e Stored Procedures
 ├── arduino/            # Firmware C++ para o Arduino Uno
 ├── db/                 # Scripts SQL originais (Tabelas, Views, Procs, Seed)
+├── docs/               # Documentação do projeto
 ├── .env                # Variáveis de ambiente (DB, API)
 └── README.md           # Este arquivo
 ```
@@ -84,6 +85,20 @@ Acesse `http://localhost:8000/docs` para ver a documentação interativa (Swagge
 *   Carregue o arquivo `arduino/pick_by_voice.ino` no seu Arduino Uno.
 *   Conecte um módulo Bluetooth (ex: HC-05) aos pinos de Serial.
 *   Pinos padrão: LED OK (8), LED ERRO (9), Buzzer (10), LCD I2C (0x27).
+
+---
+
+## 📢 Demonstração do Sistema
+![Demonstração do Pick By Voice](/arduino/pick_by_voice_demo/Modelo%20PickByVoice.png)
+
+Link para acesso a demonstração no Tinkcard: [PickByVoiceDemo](https://www.tinkercad.com/things/6f0p3xCrnIk-modelo-pickbyvoice?sharecode=3qxVWNa7DNa1RetHDgUN01mvTk6TLsJKgWb01gIXjD4)
+
+---
+
+## 📝 Roteiro de Exentesão
+O roteiro de extensão do projeto está disponível na pasta `docs/` com o nome `ROTEIRO DE EXTENSÃO - PICKBYVOICE.pdf`.
+
+Caso queira, pode acessar a versão do Google Docs através do seguinte link: [Roteiro de Extensão - PickByVoice](https://docs.google.com/document/d/1862g0fcIZiqdanSQVqO9xreU7wXJL9zYPSLBLme-9OA/edit?usp=sharing)
 
 ---
 
